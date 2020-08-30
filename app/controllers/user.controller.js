@@ -58,7 +58,7 @@ exports.signin = function (req, res){
             if (hasil == true) {
                 var secret = process.env.SECRET
 
-                var expiresIn = "30 days" 
+                var expiresIn = "30m" 
 
                 jwt.sign({id:data.id},secret, {
                     algorithm: 'HS256',
@@ -121,7 +121,7 @@ exports.getId = function (req, res) {
         //response.ok(data,res)
         })
         .catch((err) => {
-            console.log(">> Error while finding tutorial: ", err);
+            res.send({error:err});
     });
 };
 
@@ -138,10 +138,9 @@ exports.getAll = function (req, res) {
                       totalpages:parseInt(data.length/offset)?  parseInt(data.length/offset) : 1,
                       currentpage:pagination
                     });
-        //response.ok(data,res)
         })
         .catch((err) => {
-            console.log(">> Error while finding tutorial: ", err);
+            res.send({error:err});
     });
 };
 

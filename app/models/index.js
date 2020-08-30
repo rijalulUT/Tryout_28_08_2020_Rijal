@@ -24,12 +24,27 @@ db.sequelize = sequelize
 
 // create table
 db.users = require("./user.model")(sequelize,Sequelize)
+db.products = require("./product.model")(sequelize,Sequelize)
+db.product_in = require("./product_in.model")(sequelize,Sequelize)
+db.product_out = require("./product_out.model")(sequelize,Sequelize)
+//relation tabel User - Product
+db.users.hasMany(db.products);
 
-//relation tabel User - Order
-// db.users.hasMany(db.order);
+db.products.belongsTo(db.users, { 
+    foreignKey: "userId"
+});
 
-// db.order.belongsTo(db.users, { 
-//     foreignKey: "userId"
-// });
+//Relation table products - product_ins
+db.products.hasMany(db.product_in);
 
+db.product_in.belongsTo(db.products, { 
+    foreignKey: "productId"
+});
+
+//Relation table products - product_out
+db.products.hasMany(db.product_out);
+
+db.product_out.belongsTo(db.products, { 
+    foreignKey: "productId"
+});
 module.exports = db

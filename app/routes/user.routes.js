@@ -6,7 +6,7 @@ module.exports = app => {
     //create new post
     router.post("/signup",users.signup)
     router.post("/signin",users.signin)
-    router.get("/all/:limit/:pagination",users.getAll)
+    router.get("/all/:limit/:pagination",auth.isAuth,users.getAll)
     router.get("/:id",auth.isAuth,users.getId)
 
     //router.get("/order/:userId", users.findOrderByUserId );
