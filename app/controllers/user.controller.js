@@ -1,9 +1,7 @@
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
-//const process = require("dotenv")
 const db = require('../models/index')
 const User = db.users
-const Order = db.order
 //register
 exports.signup = function (req,res) {
     //Validate Request
@@ -23,6 +21,7 @@ exports.signup = function (req,res) {
         .then((data)=>{
             if(data){
                 // kalau password dan salt ada yang sama, generate salt yang beda
+                // agar mencegah hash password yang sama pada database
                 salt = bcrypt.genSaltSync(10)
                 hash = bcrypt.hashSync(req.body.password,salt)
             }

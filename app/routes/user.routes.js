@@ -11,5 +11,5 @@ module.exports = app => {
 
     //router.get("/order/:userId", users.findOrderByUserId );
 
-    app.use("/api/users/v1/",router)
+    app.use("/api/v1/users/",router)
 }

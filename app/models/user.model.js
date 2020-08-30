@@ -4,10 +4,12 @@ module.exports = (squelize,Squelize) => {
             type: Squelize.STRING
         },
         username: {
-            type: Squelize.STRING
+            type: Squelize.STRING,
+            unique: true
         },
         email: {
-            type: Squelize.STRING
+            type: Squelize.STRING,
+            unique: true
         },
         phone_number: {
             type: Squelize.STRING

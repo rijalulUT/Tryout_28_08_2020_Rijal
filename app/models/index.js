@@ -30,7 +30,7 @@ db.product_out = require("./product_out.model")(sequelize,Sequelize)
 //relation tabel User - Product
 db.users.hasMany(db.products);
 
-db.products.belongsTo(db.users, { 
+db.products.belongsTo(db.users, { as: 'suplier',
     foreignKey: "userId"
 });
 
