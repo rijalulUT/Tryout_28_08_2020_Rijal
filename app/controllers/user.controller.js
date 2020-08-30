@@ -57,7 +57,7 @@ exports.signin = function (req, res){
             if (hasil == true) {
                 var secret = process.env.SECRET
 
-                var expiresIn = "30m" 
+                var expiresIn = "30 days" 
 
                 jwt.sign({id:data.id},secret, {
                     algorithm: 'HS256',

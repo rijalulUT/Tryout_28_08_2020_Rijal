@@ -37,7 +37,7 @@ db.products.belongsTo(db.users, { as: 'suplier',
 //Relation table products - product_ins
 db.products.hasMany(db.product_in);
 
-db.product_in.belongsTo(db.products, { 
+db.product_in.belongsTo(db.products, { as:'product',
     foreignKey: "productId"
 });
 
