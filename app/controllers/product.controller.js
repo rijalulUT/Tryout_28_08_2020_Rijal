@@ -113,6 +113,18 @@ exports.editProduct = async function (req,res) {
                                    })
                               })
 }
+
+exports.deleteProduct = async function(req,res){
+    const product_id = req.params.id
+     Product.destroy({where:{id:product_id}})
+              .then( (data)=>{
+                  res.send({
+                      status:"success",
+                      message:`success delete product with primary key : ${user_id_delete}`
+                  })
+              })
+
+}
 function formatRupiah(angka, prefix){
     angka = String(angka)
     var number_string = angka.replace(/[^,\d]/g, '').toString(),
