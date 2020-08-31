@@ -42,6 +42,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 require("./app/routes/user.routes")(app)
 require("./app/routes/product.routes")(app)
 require("./app/routes/product_in.routes")(app)
+require("./app/routes/product_out.routes")(app)
 //schedule task
 // var task = cron.schedule("* * * * *", function() {
 //     // * * * * * -> Jalan per menit apabila * nya ada 5

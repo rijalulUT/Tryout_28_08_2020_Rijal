@@ -1,8 +1,6 @@
-var jwt = require('jsonwebtoken')
-var bcrypt = require('bcrypt')
 const db = require('../models/index')
 const Product = db.products
-const ProductIn = db.product_in
+const ProductOut = db.product_out
 const User = db.users
 exports.createProduct = async function (req,res){
     let date_ob = new Date();
@@ -27,30 +25,37 @@ exports.createProduct = async function (req,res){
         total:req.body.total
     }
 
-    await ProductIn.create(dataIn)
-             .then(async (data)=>{
-                Product.findByPk(req.body.product_id,{attributes:['stock']})
+   await Product.findByPk(req.body.product_id,{attributes:['stock']})
                        .then(async (products)=>{
                         let prod = JSON.parse(JSON.stringify(products, null, 4))
                         let stock = prod.stock
-                        let total_stock = stock+req.body.total
-                   Product.update({stock:total_stock},{where:{id:req.body.product_id}})
-                          .then(async (data)=>{
-                            let update_prod = JSON.parse(JSON.stringify(data, null, 4))
-                            console.log(update_prod)
+                        let total_stock = stock-req.body.total
+                        if (total_stock < 0) {
                             res.send({
-                                product_id:req.body.product_id,
-                                date:full_date,
-                                total_in:req.body.total,
-                                total_stock:total_stock
+                                status:'failed',
+                                message:'stock tidak cukup!'
                             })
-                          })
-                })           
-             })
+                            return
+                        }
+        await ProductOut.create(dataIn)
+                        .then(async (data)=>{
+                           await Product.update({stock:total_stock},{where:{id:req.body.product_id}})
+                            .then(async (data)=>{
+                              let update_prod = JSON.parse(JSON.stringify(data, null, 4))
+                              res.send({
+                                  product_id:req.body.product_id,
+                                  date:full_date,
+                                  total_in:req.body.total,
+                                  total_stock:total_stock
+                              })
+                            })                        
+                         })
+    }) 
+    
 }
 
 exports.getProductById = async function (req,res){
-    await ProductIn.findByPk(req.params.in_id,{
+    await ProductOut.findByPk(req.params.in_id,{
                         attributes:['id','date','total'],
                         include:[{
                             model:Product,
@@ -63,19 +68,19 @@ exports.getProductById = async function (req,res){
                             }]
                         }]
                     })
-           .then(async (product_in)=>{
-            let prod_in = JSON.parse(JSON.stringify(product_in, null, 4))
+           .then(async (product_out)=>{
+            let prod_out = JSON.parse(JSON.stringify(product_out, null, 4))
             const products ={
-                name: prod_in.product.name,
-                stock: prod_in.product.stock,
-                price: prod_in.product.price,
-                price_format: `Rp.${formatRupiah(prod_in.product.price)},-`,
-                suplier:prod_in.product.suplier
+                name: prod_out.product.name,
+                stock: prod_out.product.stock,
+                price: prod_out.product.price,
+                price_format: `Rp.${formatRupiah(prod_out.product.price)},-`,
+                suplier:prod_out.product.suplier
             }
             const data = {
-                id: prod_in.id,
-                date: Date(prod_in.date),
-                total: prod_in.total,
+                id: prod_out.id,
+                date: Date(prod_out.date),
+                total: prod_out.total,
                 product:products
             }
                res.send({
@@ -92,7 +97,7 @@ exports.getProductAll = async function (req,res){
     const limit      = parseInt(req.params.limit)
     const offset     =  limit-(limit/pagination)
 
-   await ProductIn.findAll({attributes:['id','date','total'],
+   await ProductOut.findAll({attributes:['id','date','total'],
                         include:[{
                             model:Product,
                             as:'product',
