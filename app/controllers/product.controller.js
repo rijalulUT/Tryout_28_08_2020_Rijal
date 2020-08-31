@@ -95,7 +95,24 @@ exports.getProductAll = function (req,res){
                    })
             })
 }
-
+exports.editProduct = async function (req,res) {
+    const product_id = req.params.id
+    const user = (jwt.verify(req.headers.token,process.env.SECRET))
+    const data = {
+        name: req.body.name,
+        stock: req.body.stock,
+        price: req.body.price,
+        userId: user.id
+    }
+    await Product.update(data,{where:{id:product_id}})
+                              .then(async(results)=>{
+                                res.send({
+                                    message:"succes update data",
+                                    status: "success",
+                                    data:data
+                                   })
+                              })
+}
 function formatRupiah(angka, prefix){
     angka = String(angka)
     var number_string = angka.replace(/[^,\d]/g, '').toString(),

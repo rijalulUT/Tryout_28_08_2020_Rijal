@@ -162,7 +162,7 @@ exports.editUser = async  function(req,res) {
                     await User.update(with_password_data,{where:{id:user_id}})
                               .then(async(results)=>{
                                 res.send({
-                                    message:"succes get data",
+                                    message:"succes update data",
                                     status: "success",
                                     data:with_password_data
                                    })
