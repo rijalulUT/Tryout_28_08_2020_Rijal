@@ -143,3 +143,51 @@ exports.getAll = function (req, res) {
     });
 };
 
+exports.editUser = async  function(req,res) {
+    const user_id = req.params.id
+    await User.findByPk(user_id)
+              .then(async(data)=>{
+                let user_data = JSON.parse(JSON.stringify(data, null, 4))
+                let salt = user_data.salt
+                    var hash = bcrypt.hashSync(req.body.password,salt)
+                    let with_password_data = {
+                        full_name   : req.body.full_name,
+                        username    : req.body.username,
+                        phone_number: req.body.phone_number,
+                        email       : req.body.email,
+                        role        : req.body.role,
+                        salt        : salt,
+                        password    : hash
+                    }
+                    await User.update(with_password_data,{where:{id:user_id}})
+                              .then(async(results)=>{
+                                res.send({
+                                    message:"succes get data",
+                                    status: "success",
+                                    data:with_password_data
+                                   })
+                              })
+                
+              })
+}
+
+exports.deleteUser = async function(req,res){
+    const user_login = (jwt.verify(req.headers.token,process.env.SECRET))
+    const user_id_login = user_login.id
+    const user_id_delete = req.params.id
+    if (user_id_login == user_id_delete) {
+        res.send({
+            status:'failed',
+            message:'Cannot delete your own account'
+        })
+        return
+    }
+     User.destroy({where:{id:user_id_delete}})
+              .then( (data)=>{
+                  res.send({
+                      status:"success",
+                      message:`success delete user with primary key : ${user_id_delete}`
+                  })
+              })
+
+}

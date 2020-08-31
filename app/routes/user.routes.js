@@ -8,7 +8,8 @@ module.exports = app => {
     router.post("/signin",users.signin)
     router.get("/all/:limit/:pagination",auth.isAuth,users.getAll)
     router.get("/:id",auth.isAuth,users.getId)
-
+    router.put("/:id",auth.isAuth,users.editUser)
+    router.delete("/:id",auth.isAuth,users.deleteUser)
     //router.get("/order/:userId", users.findOrderByUserId );
 
     app.use("/api/v1/users/",router)
